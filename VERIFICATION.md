@@ -19,7 +19,7 @@
 
 ## 验证边界
 
-- 未部署 HTTPS 公网站点。
+- 已部署 HTTPS 公网站点：https://3521339406-beep.github.io/dukinxxx/ 。HTTP 200，线上日历正确渲染，设置页显示“离线资源已就绪”。GitHub Actions run 39025846115（第二次执行）。
 - 未在真实 iPhone Safari / 主屏幕环境实机测试；移动浏览器布局和 Pointer Events 路径已在桌面 Edge 的移动视口测试。
 - localStorage 多窗口极端同时写入不提供事务保证。
 - 不支持 JSON 导入，导出文件不等于应用内一键恢复能力。

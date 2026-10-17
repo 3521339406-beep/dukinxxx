@@ -14,7 +14,7 @@ Execution: direct implementation requested by user; inline execution.
 
 Independent review: corrected adjacent-delete undo ordering with red/green regression test; corrected touch drag detection for zero movementY with browser reproduction and retest. Final suite 12/12; browser acceptance and build passed.
 
-Follow-up: user requested GitHub deployment. GitHub Pages workflow prepared; browser login required to create repository and enable Pages because connector does not expose those capabilities.
+Follow-up complete: user authorized GitHub deployment; source uploaded to 3521339406-beep/dukinxxx, GitHub Actions Pages source enabled, HTTPS page verified at https://3521339406-beep.github.io/dukinxxx/ .
 
 Confirmed: Monday start; current month/today on launch; blank home contains calendar only; dates have progress; same names allowed; incomplete drag order; completed bottom; uncheck appends to incomplete; 5-second undo; past read-only; today/future editable and completable; name-only tasks; immediate local saves; manual full JSON export without import; no recurrence, categories, accounts or sync.
 

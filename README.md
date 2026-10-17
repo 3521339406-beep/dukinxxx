@@ -26,7 +26,7 @@ GitHub Pages 自动部署工作流已包含在 `.github/workflows/pages.yml`。�
 4. 在 iPhone Safari 打开实际 HTTPS 地址，联网等待“设置”中的“离线资源已就绪”，选择“分享 → 添加到主屏幕”。
 5. 打开一次后可离线使用。上线更新时修改 `sw.js` 的 CACHE 版本，重新构建部署；为防止旧页面混用新脚本，更新会等旧窗口全部关闭后生效。
 
-**本交付没有发布公网网站，也没有已验证的 HTTPS 托管地址。** 本机浏览器验证不能替代真实 iPhone Safari 的安装测试。托管服务可自行选择免费静态额度，项目不绑定任何厂商。
+**已部署到 GitHub Pages： https://3521339406-beep.github.io/dukinxxx/** 。线上 HTTPS 页面和离线资源已验证。真实 iPhone Safari 的安装仍需实机测试。源码仓库：https://github.com/3521339406-beep/dukinxxx 。
 
 ## 使用规则
 
