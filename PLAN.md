@@ -8,7 +8,7 @@ User now requests phone-export → desktop-import, superseding the original no-i
 - [x] Add accessible import preview/confirmation/status and backup download in settings.
 - [x] Test isolated phone export and desktop restore, cancellation, invalid files, repeated import, persistence and stale preview.
 - [x] Run existing regressions and build, inspect mobile screenshot.
-- [ ] Publish to existing GitHub Pages and verify served upgrade.
+- [x] Publish to existing GitHub Pages and verify served upgrade. Commit 097d09da2e08b918cf47bb46a28709083acfaa7d; Actions run 39112043089 succeeded; production cross-device import browser acceptance passed.
 
 Source: user request, plus readable user confirmations from conversation 6ad32223-00dc-83ec-a986-3ffbbaf72468. Final PRD assistant content was unavailable (reference placeholder); no invented earlier requirements.
 
