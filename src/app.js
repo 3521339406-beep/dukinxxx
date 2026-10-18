@@ -1,5 +1,5 @@
 import {localDate,monthCells,dayTasks,validDate} from './model.js';
-import {Repository,KEY} from './store.js';
+import {Repository,KEY,parseImport} from './store.js';
 const $=s=>document.querySelector(s),app=$('#app');
 // Access storage lazily: denied access must not prevent the calendar from opening.
 const repo=new Repository({getItem:k=>localStorage.getItem(k),setItem:(k,v)=>localStorage.setItem(k,v)});
@@ -72,13 +72,40 @@ function undoToast(ticket){
  const timer=setInterval(()=>{const left=Math.ceil((ticket.expires-Date.now())/1000);if(left<=0){clearInterval(timer);toast.remove();}else button.textContent=`撤销 · ${left}秒`;},100);
  button.onclick=()=>{const r=mutate({type:'undo',ticket});if(r){clearInterval(timer);toast.remove();}};
 }
-$('#settings').onclick=()=>{$('#offline-status').textContent=offlineText;$('#settings-dialog').showModal();};
+$('#settings').onclick=()=>{$('#offline-status').textContent=offlineText;refreshBackup();$('#settings-dialog').showModal();};
 $('#close-settings').onclick=()=>$('#settings-dialog').close();
-$('#export').onclick=()=>{
- try{const blob=new Blob([repo.export()],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=`日序-全部计划-${localDate()}.json`;a.click();setTimeout(()=>URL.revokeObjectURL(url),10000);}catch{error('无法访问浏览器存储，导出失败。');}
+function downloadJSON(raw,label){const blob=new Blob([raw],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=`日序-${label}-${localDate()}.json`;a.click();setTimeout(()=>URL.revokeObjectURL(url),10000);}
+$('#export').onclick=()=>{try{downloadJSON(repo.export(),'全部计划');}catch{error('无法访问浏览器存储，导出失败。');}};
+let pendingImport=null,importRequest=0;
+function resetImport(){importRequest++;pendingImport=null;$('#import-preview').hidden=true;$('#import-file').value='';}
+function refreshBackup(){try{$('#export-backup').hidden=repo.backup()===null;}catch{$('#export-backup').hidden=true;}}
+$('#import').onclick=()=>$('#import-file').click();
+$('#cancel-import').onclick=()=>{resetImport();$('#import-status').textContent='已取消，现有计划未修改。';$('#import').focus();};
+$('#settings-dialog').addEventListener('close',()=>{resetImport();$('#import-status').textContent='';});
+$('#import-file').onchange=async()=>{
+ const file=$('#import-file').files[0];resetImport();if(!file)return;const request=importRequest;
+ $('#import-status').textContent='正在检查文件…';
+ try{
+  if(file.size>10*1024*1024)throw Error('文件超过 10 MB，请选择日序导出的 JSON 备份。');
+  const raw=await file.text();if(request!==importRequest)return;
+  const incoming=parseImport(raw),expected=repo.snapshot();let currentCount;
+  try{currentCount=repo.read().length;}catch{currentCount=null;}
+  pendingImport={raw,expected};
+  $('#import-summary').textContent=`文件“${file.name}”包含 ${incoming.length} 项任务，覆盖 ${new Set(incoming.map(t=>t.date)).size} 个日期。${currentCount===null?'当前本地数据无法读取。':`本机现有 ${currentCount} 项任务。`}确认后将整份替换本机计划（包括历史日期），不做合并。${incoming.length===0?'此文件为空，导入后本机任务列表将清空。':''}替换前会保留一份本地备份，可在设置中下载；仅保留最近一次导入前的备份。`;
+  $('#import-preview').hidden=false;$('#import-status').textContent='文件检查通过，请确认是否替换。';$('#confirm-import').focus();
+ }catch(e){if(request===importRequest)$('#import-status').textContent=e.message;}
 };
+$('#confirm-import').onclick=()=>{
+ if(!pendingImport)return;
+ try{
+  const incoming=repo.importJSON(pendingImport.raw,pendingImport.expected);resetImport();
+  $('#toasts').replaceChildren();$('#error').hidden=true;read();render();refreshBackup();
+  $('#import-status').textContent=`已导入 ${incoming.length} 项任务。原有数据已备份，可点击下方按钮下载。`;$('#import').focus();
+ }catch(e){resetImport();refreshBackup();$('#import-status').textContent=e.message;}
+};
+$('#export-backup').onclick=()=>{try{const raw=repo.backup();if(raw===null)throw Error('暂无导入前备份。');downloadJSON(raw,'导入前备份');}catch(e){$('#import-status').textContent=e.message;}};
 function route(){const value=location.hash.slice(1);selected=validDate(value)?value:null;if(selected)month=new Date(selected+'T12:00:00');$('#task-dialog').close();render();window.scrollTo(0,0);}
-addEventListener('hashchange',route);addEventListener('storage',e=>{if(e.key===KEY||e.key===null){read();render();}});
+addEventListener('hashchange',route);addEventListener('storage',e=>{if(e.key===KEY||e.key===null){$('#toasts').replaceChildren();read();render();}});
 function refreshDate(){if(today!==localDate()){read();render();}}
 document.addEventListener('visibilitychange',()=>{if(!document.hidden){read();render();}});addEventListener('focus',refreshDate);setInterval(refreshDate,1000);
 addEventListener('beforeinstallprompt',e=>{e.preventDefault();installEvent=e;$('#install').hidden=false;});

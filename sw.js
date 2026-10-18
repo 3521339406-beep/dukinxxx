@@ -1,4 +1,4 @@
-const CACHE='rixu-shell-v1.0.0';
+const CACHE='rixu-shell-v1.1.0';
 const ASSETS=['./','./index.html','./styles.css','./src/app.js','./src/model.js','./src/store.js','./manifest.webmanifest','./icons/icon.svg','./icons/icon-192.png','./icons/icon-512.png','./icons/maskable-512.png','./icons/apple-touch-icon.png'];
 self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(ASSETS))));
 self.addEventListener('activate',event=>event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k.startsWith('rixu-shell-')&&k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));

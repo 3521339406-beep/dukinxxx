@@ -1,5 +1,15 @@
 # Personal Planning V1.0
 
+## V1.1 user-authorized upgrade — 2026-10-18
+
+User now requests phone-export → desktop-import, superseding the original no-import constraint. Scope: validated JSON v1 restore, explicit whole-dataset replacement preview/confirmation, single local pre-import raw backup with download, retain task IDs/order/dates/completion including history. No merge or cloud sync. Reject malformed/future-version/duplicate-ID files and files over 10 MB; cancel means no writes; fail backup/save safely; detect stale preview. Keep storage schema/key unchanged for existing users. Bump service-worker cache to v1.1.0, let old tabs close before activation.
+
+- [x] Add failing import tests, implement store parsing/replacement/backup.
+- [x] Add accessible import preview/confirmation/status and backup download in settings.
+- [x] Test isolated phone export and desktop restore, cancellation, invalid files, repeated import, persistence and stale preview.
+- [x] Run existing regressions and build, inspect mobile screenshot.
+- [ ] Publish to existing GitHub Pages and verify served upgrade.
+
 Source: user request, plus readable user confirmations from conversation 6ad32223-00dc-83ec-a986-3ffbbaf72468. Final PRD assistant content was unavailable (reference placeholder); no invented earlier requirements.
 
 Architecture: dependency-free static HTML/CSS/ES modules, pure task rules in model.js, localStorage repository in store.js, DOM UI in app.js. Service worker caches only app assets. No backend or external requests.
